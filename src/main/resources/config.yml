@@ -1,0 +1,3 @@
+save-interval: 6000
+inventory:
+  click_command: "tp %player% %shoplocation%"

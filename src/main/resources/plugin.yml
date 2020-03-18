@@ -1,0 +1,11 @@
+name: PssInfo
+prefix: PSSI
+version: ${project.version}
+main: me.darkeyedragon.pssinfo.PssInfo
+api-version: 1.13
+depend: [PrettySimpleShop]
+commands:
+  shopsearch:
+    description: "Search a shop for specific items"
+    aliases: [ssearch]
+    usage: ssearch [material]
