@@ -13,7 +13,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class JsonConverter {
 
@@ -23,21 +26,27 @@ public class JsonConverter {
         gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(ShopItem.class, new ShopItemTypeAdapter())
-                .registerTypeAdapter(ItemStack.class, new JsonItemStackBase64Adapter())
+                .registerTypeHierarchyAdapter(ItemStack.class, new JsonItemStackBase64Adapter())
                 .create();
     }
 
-    public static void writeShopItemToJson(Collection<ShopItem> collection, Plugin plugin) throws IOException {
+    public static void writeShopItemToJson(List<ShopItem> collection, Plugin plugin) throws IOException {
         File file = new File(plugin.getDataFolder(), "shops.json");
-        System.out.println(file.getAbsolutePath());
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(collection, writer);
         }
     }
 
-    public static Collection<ShopItem> jsonToShopItem(Plugin plugin) {
-        Type setType = new TypeToken<Collection<ShopItem>>() {
+    public static List<ShopItem> jsonToShopItem(Plugin plugin) {
+        Type setType = new TypeToken<List<ShopItem>>() {
         }.getType();
-        return gson.fromJson(new File(plugin.getDataFolder(), "shops.json").getPath(), setType);
+        StringBuilder contentBuilder = new StringBuilder();
+        File file = new File(plugin.getDataFolder(), "shops.json");
+        try (Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8)) {
+            stream.forEach(s -> contentBuilder.append(s).append("\n"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gson.fromJson(contentBuilder.toString(), setType);
     }
 }

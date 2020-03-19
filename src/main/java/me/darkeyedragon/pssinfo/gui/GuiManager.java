@@ -6,8 +6,11 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import me.darkeyedragon.pssinfo.PssInfo;
 import me.darkeyedragon.pssinfo.config.ConfigHandler;
 import me.darkeyedragon.pssinfo.shop.ShopItem;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,15 +31,25 @@ public class GuiManager {
     public void populate(Collection<ShopItem> shopItems) {
         List<GuiItem> guiItems = new ArrayList<>(shopItems.size());
 
-        shopItems.forEach(shopItem -> guiItems.add(new GuiItem(shopItem.getItemStack(), inventoryClickEvent -> {
-            try {
-                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), configHandler.getCommandToExecute(inventoryClickEvent.getWhoClicked().getName(), shopItem.getLocation()));
-            } catch (InvalidConfigurationException e) {
-                e.printStackTrace();
-            }
-            inventoryClickEvent.setCancelled(true);
-
-        })));
+        for (ShopItem shopItem : shopItems) {
+            ItemStack itemStack = shopItem.getItemStack().clone();
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.GOLD + "Price: " + shopItem.getPrice());
+            lore.add(ChatColor.GOLD + "World: " + shopItem.getLocation().getWorld().getName());
+            lore.add(ChatColor.GOLD + "Location: X:" + shopItem.getLocation().getBlockX() + " Y:" + shopItem.getLocation().getBlockY() + " Z:" + shopItem.getLocation().getBlockZ());
+            itemMeta.setLore(lore);
+            itemStack.setItemMeta(itemMeta);
+            GuiItem guiItem = new GuiItem(itemStack, inventoryClickEvent -> {
+                try {
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), configHandler.getCommandToExecute(inventoryClickEvent.getWhoClicked().getName(), shopItem.getLocation()));
+                } catch (InvalidConfigurationException e) {
+                    e.printStackTrace();
+                }
+                inventoryClickEvent.setCancelled(true);
+            });
+            guiItems.add(guiItem);
+        }
         paginatedPane = new PaginatedPane(0, 0, LENGTH, HEIGHT);
         paginatedPane.populateWithGuiItems(guiItems);
     }

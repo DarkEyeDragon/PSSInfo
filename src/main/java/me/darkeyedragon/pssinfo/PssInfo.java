@@ -5,18 +5,22 @@ import com.robomwm.prettysimpleshop.shop.ShopAPI;
 import me.darkeyedragon.pssinfo.command.ShopSearchCommand;
 import me.darkeyedragon.pssinfo.command.ShopSearchTabCompleter;
 import me.darkeyedragon.pssinfo.config.ConfigHandler;
+import me.darkeyedragon.pssinfo.listener.ShopDestroyListener;
 import me.darkeyedragon.pssinfo.listener.ShopOpenCloseListener;
-import me.darkeyedragon.pssinfo.listener.Test;
 import me.darkeyedragon.pssinfo.shop.ShopItem;
 import me.darkeyedragon.pssinfo.util.JsonConverter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class PssInfo extends JavaPlugin {
@@ -50,13 +54,23 @@ public final class PssInfo extends JavaPlugin {
         configHandler = new ConfigHandler(this);
 
         getServer().getPluginManager().registerEvents(new ShopOpenCloseListener(this), this);
-        getServer().getPluginManager().registerEvents(new Test(this), this);
-        /*Collection<ShopItem> collection = JsonConverter.jsonToShopItem(this);
-        collection.forEach(shopItem -> shopItemMap.put(shopItem.getUuid(), shopItem));
+        getServer().getPluginManager().registerEvents(new ShopDestroyListener(this), this);
 
-        GuiManager guiManager = new GuiManager(this);
-        guiManager.populate(getShopItemMap().values());*/
+        List<ShopItem> collection = JsonConverter.jsonToShopItem(this);
+        collection.forEach(shopItem -> shopItemMap.put(shopItem.getLocation(), shopItem));
 
+        //Schedule a save every 3 minutes (3*60*20) after 3 minutes
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(this, () -> {
+            try {
+                getLogger().info(ChatColor.GRAY + "Saving shops.json...");
+                JsonConverter.writeShopItemToJson(new ArrayList<>(shopItemMap.values()), this);
+                getLogger().info(ChatColor.GRAY + "Successfully saved!");
+            } catch (IOException e) {
+                e.printStackTrace();
+                getLogger().warning("Could not save to shops.json");
+            }
+        }, 3600L, 3600L);
     }
 
     public ShopAPI getShopAPI() {
@@ -66,7 +80,7 @@ public final class PssInfo extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            JsonConverter.writeShopItemToJson(shopItemMap.values(), this);
+            JsonConverter.writeShopItemToJson(new ArrayList<>(shopItemMap.values()), this);
         } catch (IOException e) {
             e.printStackTrace();
             getLogger().severe("Unable to save shop information!!");
