@@ -22,12 +22,12 @@ public class ShopOpenCloseListener implements Listener {
 
     @EventHandler
     public void onShopOpenEvent(ShopOpenCloseEvent event) {
-        if (!event.isOpen() || event.getShopInfo().getItem() == null || event.getShopInfo().getItem().getType() == Material.AIR)
+        if (event.isOpen() || event.getShopInfo().getItem() == null || event.getShopInfo().getItem().getType() == Material.AIR)
             return;
         Container container = shopAPI.getContainer(event.getShopInfo().getLocation());
         Location location = shopAPI.getLocation(container);
         ShopItem newShopItem = new ShopItem(location, shopAPI.getItemStack(container), shopAPI.getPrice(container));
-        plugin.getShopItemMap().putIfAbsent(newShopItem.getLocation(), newShopItem);
+        plugin.getShopItemMap().put(newShopItem.getLocation(), newShopItem);
     }
 
 }
