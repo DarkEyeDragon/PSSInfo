@@ -70,7 +70,7 @@ public final class PssInfo extends JavaPlugin {
                 e.printStackTrace();
                 getLogger().warning("Could not save to shops.json");
             }
-        }, 3600L, 3600L);
+        }, getConfigHandler().getSaveInterval(), getConfigHandler().getSaveInterval());
     }
 
     public ShopAPI getShopAPI() {

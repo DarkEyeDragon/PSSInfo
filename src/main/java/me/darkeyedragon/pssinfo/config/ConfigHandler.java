@@ -24,4 +24,18 @@ public class ConfigHandler {
             throw new InvalidConfigurationException();
         }
     }
+
+    public String getDiffWorldTeleportMessage() throws InvalidConfigurationException {
+        String message = plugin.getConfig().getString("message.different_world");
+        if (message != null) {
+            message = ChatColor.translateAlternateColorCodes('&', message);
+            return message;
+        } else {
+            throw new InvalidConfigurationException();
+        }
+    }
+
+    public long getSaveInterval() {
+        return plugin.getConfig().getLong("save-interval");
+    }
 }

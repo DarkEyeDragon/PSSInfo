@@ -1,3 +1,6 @@
-save-interval: 6000
+#in ticks (20 ticks is 1 second, so 20*60*3 = 3600, 3min
+save-interval: 3600
+message:
+  different_world: "&cYou have to be in the same world as the shop!"
 inventory:
   click_command: "tp %player% %shoplocation%"

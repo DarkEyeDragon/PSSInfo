@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import me.darkeyedragon.pssinfo.shop.ShopItem;
-import me.darkeyedragon.pssinfo.typeadaptors.JsonItemStackBase64Adapter;
-import me.darkeyedragon.pssinfo.typeadaptors.ShopItemTypeAdapter;
+import me.darkeyedragon.pssinfo.typeadaptor.JsonItemStackBase64Adapter;
+import me.darkeyedragon.pssinfo.typeadaptor.ShopItemTypeAdapter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 

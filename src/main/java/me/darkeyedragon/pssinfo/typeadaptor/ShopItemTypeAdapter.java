@@ -1,4 +1,4 @@
-package me.darkeyedragon.pssinfo.typeadaptors;
+package me.darkeyedragon.pssinfo.typeadaptor;
 
 import com.google.gson.*;
 import me.darkeyedragon.pssinfo.shop.ShopItem;

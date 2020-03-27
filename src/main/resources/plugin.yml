@@ -6,6 +6,6 @@ api-version: 1.13
 depend: [PrettySimpleShop]
 commands:
   shopsearch:
-    description: "Search a shop for specific items"
+    description: "Search a shop for specific items, "
     aliases: [ssearch]
-    usage: ssearch [material]
+    usage: "§cUsage: §b/ssearch §8[§amaterial§8] §8[§aname§8|§aprice§8|§aworld§8]"
