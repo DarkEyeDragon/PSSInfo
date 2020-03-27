@@ -28,7 +28,7 @@ public class ShopSearchCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender.hasPermission("pssinfo.search")) return true;
+        if (!sender.hasPermission("pssinfo.search")) return true;
         //Check if an actual player
         if (!(sender instanceof Player)) return false;
         List<ShopItem> result;
