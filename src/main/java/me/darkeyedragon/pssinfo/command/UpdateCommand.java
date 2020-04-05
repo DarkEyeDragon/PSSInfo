@@ -10,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+/**
+ * The command used to update the shops.json file
+ * based on whatever needs to be transformed from the previous version
+ */
 public class UpdateCommand implements CommandExecutor {
 
     private final PssInfo plugin;

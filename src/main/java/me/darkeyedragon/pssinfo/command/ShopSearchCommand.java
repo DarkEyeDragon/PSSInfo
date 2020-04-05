@@ -22,6 +22,10 @@ public class ShopSearchCommand implements CommandExecutor {
 
     private PssInfo plugin;
 
+
+    /**
+     * @param plugin The {@link PssInfo} instance
+     */
     public ShopSearchCommand(PssInfo plugin) {
         this.plugin = plugin;
     }
@@ -78,6 +82,11 @@ public class ShopSearchCommand implements CommandExecutor {
         return false;
     }
 
+    /**
+     * @param shopItems A {@link List} of {@link ShopItem}'s to sort based on the {@link Sort} Enum
+     * @param sort      the {@link Sort} Enum
+     * @return a sorted list based on the sort enum
+     */
     private List<ShopItem> sort(List<ShopItem> shopItems, Sort sort) {
         switch (sort) {
             case NAME:

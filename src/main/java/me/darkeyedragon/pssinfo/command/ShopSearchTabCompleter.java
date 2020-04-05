@@ -28,6 +28,13 @@ public class ShopSearchTabCompleter implements TabCompleter {
         Material_LIST.addAll(SORT_LIST);
     }
 
+    /**
+     * @param sender  the {@link CommandSender}
+     * @param command the {@link Command}
+     * @param alias   the alias of the command
+     * @param args    the arguments provided
+     * @return a list that contains all possible auto completions
+     */
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
