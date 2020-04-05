@@ -4,18 +4,20 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 public class ShopItem {
-    private final ItemStack itemStack;
+    private final ItemStack placeholderStack;
     private final double price;
     private final Location location;
+    private final int itemAmount;
 
-    public ShopItem(Location location, ItemStack itemStack, double price) {
-        this.itemStack = itemStack;
+    public ShopItem(Location location, ItemStack placeholderStack, double price, int itemAmount) {
+        this.placeholderStack = placeholderStack;
         this.price = price;
         this.location = location;
+        this.itemAmount = itemAmount;
     }
 
-    public ItemStack getItemStack() {
-        return itemStack;
+    public ItemStack getPlaceholderStack() {
+        return placeholderStack;
     }
 
     public double getPrice() {
@@ -24,5 +26,9 @@ public class ShopItem {
 
     public Location getLocation() {
         return location;
+    }
+
+    public int getItemAmount() {
+        return itemAmount;
     }
 }

@@ -26,9 +26,8 @@ public class GuiManager {
     private ConfigHandler configHandler;
     private PssInfo plugin;
     private PaginatedPane paginatedPane;
-    private StaticPane navPane;
     private MasonryPane masonryPane;
-
+    private Gui gui;
 
     public GuiManager(PssInfo plugin) {
         this.configHandler = plugin.getConfigHandler();
@@ -39,10 +38,15 @@ public class GuiManager {
         List<GuiItem> guiItems = new ArrayList<>(shopItems.size());
 
         for (ShopItem shopItem : shopItems) {
-            ItemStack itemStack = shopItem.getItemStack().clone();
+            ItemStack itemStack = shopItem.getPlaceholderStack().clone();
             ItemMeta itemMeta = itemStack.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GOLD + "Price: " + shopItem.getPrice());
+            if (shopItem.getItemAmount() != -1) {
+                lore.add(ChatColor.GOLD + "Amount: " + shopItem.getItemAmount());
+            } else {
+                lore.add(ChatColor.GOLD + "Amount: " + ChatColor.RED + "Unknown");
+            }
             lore.add(ChatColor.GOLD + "World: " + shopItem.getLocation().getWorld().getName());
             lore.add(ChatColor.GOLD + "Location: X:" + shopItem.getLocation().getBlockX() + " Y:" + shopItem.getLocation().getBlockY() + " Z:" + shopItem.getLocation().getBlockZ());
             itemMeta.setLore(lore);
@@ -63,7 +67,7 @@ public class GuiManager {
             guiItems.add(guiItem);
         }
 
-        navPane = new StaticPane(0, 6, 9, 1);
+        StaticPane navPane = new StaticPane(0, 6, 9, 1);
         ItemStack next = new ItemStack(Material.GREEN_WOOL);
         ItemMeta nextItemMeta = next.getItemMeta();
         nextItemMeta.setDisplayName(ChatColor.GREEN + "Next page >");
@@ -74,13 +78,17 @@ public class GuiManager {
         previous.setItemMeta(previousItemMeta);
         navPane.addItem(new GuiItem(next, inventoryClickEvent -> {
             if (paginatedPane.getPage() + 1 < paginatedPane.getPages()) {
-                show(inventoryClickEvent.getWhoClicked(), paginatedPane.getPage() + 1);
+                //show(inventoryClickEvent.getWhoClicked(), paginatedPane.getPage() + 1);
+                paginatedPane.setPage(paginatedPane.getPage() + 1);
+                gui.update();
             }
             inventoryClickEvent.setCancelled(true);
         }), 8, 0);
         navPane.addItem(new GuiItem(previous, inventoryClickEvent -> {
             if (paginatedPane.getPage() > 0) {
-                show(inventoryClickEvent.getWhoClicked(), paginatedPane.getPage() - 1);
+                //show(inventoryClickEvent.getWhoClicked(), paginatedPane.getPage() - 1);
+                paginatedPane.setPage(paginatedPane.getPage() - 1);
+                gui.update();
             }
             inventoryClickEvent.setCancelled(true);
         }), 0, 0);
@@ -91,9 +99,8 @@ public class GuiManager {
         masonryPane.addPane(navPane);
     }
 
-    public void show(HumanEntity humanEntity, int page) {
-        Gui gui = new Gui(plugin, MAX_HEIGHT, "Shop Information");
-        paginatedPane.setPage(page);
+    public void show(HumanEntity humanEntity) {
+        gui = new Gui(plugin, MAX_HEIGHT, "Shop Information");
         gui.addPane(masonryPane);
         gui.show(humanEntity);
     }

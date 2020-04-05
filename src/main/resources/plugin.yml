@@ -9,7 +9,14 @@ commands:
     description: "Search a shop for specific items, sorted by name, price, world"
     aliases: [ssearch]
     usage: "§cUsage: §b/ssearch §8[§amaterial§8] §8[§aname§8|§aprice§8|§aworld§8]"
+  shopupdate:
+    description: "Update data files from an older version to the latest."
+    aliases: [supdate]
+    usage: "§cUsage: §b/supdate"
 permissions:
   pssinfo.search:
     description: Show all buyable items in a gui
     default: true
+  pssinfo.update:
+    description: Convert older data files to newer version
+    default: op

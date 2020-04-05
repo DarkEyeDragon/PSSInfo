@@ -4,6 +4,7 @@ import com.robomwm.prettysimpleshop.PrettySimpleShop;
 import com.robomwm.prettysimpleshop.shop.ShopAPI;
 import me.darkeyedragon.pssinfo.command.ShopSearchCommand;
 import me.darkeyedragon.pssinfo.command.ShopSearchTabCompleter;
+import me.darkeyedragon.pssinfo.command.UpdateCommand;
 import me.darkeyedragon.pssinfo.config.ConfigHandler;
 import me.darkeyedragon.pssinfo.listener.ShopDestroyListener;
 import me.darkeyedragon.pssinfo.listener.ShopOpenCloseListener;
@@ -15,13 +16,13 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class PssInfo extends JavaPlugin {
 
@@ -50,6 +51,8 @@ public final class PssInfo extends JavaPlugin {
         }
         getCommand("shopsearch").setExecutor(new ShopSearchCommand(this));
         getCommand("shopsearch").setTabCompleter(new ShopSearchTabCompleter());
+
+        getCommand("shopupdate").setExecutor(new UpdateCommand(this));
 
         configHandler = new ConfigHandler(this);
 
@@ -87,8 +90,23 @@ public final class PssInfo extends JavaPlugin {
         }
     }
 
-    public Map<Location, ShopItem> getShopItemMap() {
-        return shopItemMap;
+
+    @NotNull
+    @Contract(pure = true)
+    public @UnmodifiableView Map<Location, ShopItem> getShopItemMap() {
+        return Collections.unmodifiableMap(shopItemMap);
+    }
+
+    public void addShopItem(ShopItem shopItem) {
+        shopItemMap.put(shopItem.getLocation(), shopItem);
+    }
+
+    public void removeShopItem(Location locationKey) {
+        shopItemMap.remove(locationKey);
+    }
+
+    public void populateShopItems(Map<Location, ShopItem> shopItemMap) {
+        this.shopItemMap = shopItemMap;
     }
 
     public ConfigHandler getConfigHandler() {

@@ -30,48 +30,50 @@ public class ShopSearchCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("pssinfo.search")) return true;
         //Check if an actual player
-        if (!(sender instanceof Player)) return false;
-        List<ShopItem> result;
-        Sort sorter;
-        if (args.length > 0) {
-            //Check if the material exists
-            if (MaterialUtil.isMaterial(args[0])) {
-                Material searchMaterial = Material.matchMaterial(args[0].toUpperCase());
+        if (sender instanceof Player) {
+            List<ShopItem> result;
+            Sort sorter;
+            if (args.length > 0) {
+                //Check if the material exists
+                if (MaterialUtil.isMaterial(args[0])) {
+                    Material searchMaterial = Material.matchMaterial(args[0].toUpperCase());
 
-                //Filter out the materials that match the search
-                result = plugin.getShopItemMap().values().stream().filter(shopItem1 -> shopItem1.getItemStack().getType() == searchMaterial).collect(Collectors.toList());
-                if (args.length > 1) {
-                    //Sort the list based on the sorter, if it exists
-                    try {
-                        sorter = Sort.valueOf(args[1].toUpperCase());
-                        result = sort(result, sorter);
-                    } catch (IllegalArgumentException ex) {
-                        sender.sendMessage(ChatColor.RED + "Please provide a valid sorting argument");
-                        return true;
+                    //Filter out the materials that match the search
+                    result = plugin.getShopItemMap().values().stream().filter(shopItem1 -> shopItem1.getPlaceholderStack().getType() == searchMaterial).collect(Collectors.toList());
+                    if (args.length > 1) {
+                        //Sort the list based on the sorter, if it exists
+                        try {
+                            sorter = Sort.valueOf(args[1].toUpperCase());
+                            result = sort(result, sorter);
+                        } catch (IllegalArgumentException ex) {
+                            sender.sendMessage(ChatColor.RED + "Please provide a valid sorting argument");
+                            return true;
+                        }
+                    } else {
+                        result = sort(result, Sort.PRICE);
                     }
                 } else {
-                    result = sort(result, Sort.PRICE);
+                    //Show all items
+                    result = new ArrayList<>(plugin.getShopItemMap().values());
+                    //Sort the list if there is a valid sorter, otherwise invalid command
+                    try {
+                        sorter = Sort.valueOf(args[0].toUpperCase());
+                        result = sort(result, sorter);
+                    } catch (IllegalArgumentException ignored) {
+                        return false;
+                    }
                 }
             } else {
-                //Show all items
                 result = new ArrayList<>(plugin.getShopItemMap().values());
-                //Sort the list if there is a valid sorter, otherwise invalid command
-                try {
-                    sorter = Sort.valueOf(args[0].toUpperCase());
-                    result = sort(result, sorter);
-                } catch (IllegalArgumentException ignored) {
-                    return false;
-                }
+                result = sort(result, Sort.NAME);
             }
-        } else {
-            result = new ArrayList<>(plugin.getShopItemMap().values());
-            result = sort(result, Sort.NAME);
-        }
-        if (result != null) {
-            GuiManager guiManager = new GuiManager(plugin);
-            guiManager.populate(result);
-            guiManager.show((Player) sender, 0);
-            return true;
+            if (result != null) {
+                GuiManager guiManager = new GuiManager(plugin);
+                guiManager.populate(result);
+                guiManager.show((Player) sender);
+                return true;
+            }
+            return false;
         }
         return false;
     }
@@ -79,7 +81,7 @@ public class ShopSearchCommand implements CommandExecutor {
     private List<ShopItem> sort(List<ShopItem> shopItems, Sort sort) {
         switch (sort) {
             case NAME:
-                return shopItems.stream().sorted(Comparator.comparing(shopItem -> shopItem.getItemStack().getType().name())).collect(Collectors.toList());
+                return shopItems.stream().sorted(Comparator.comparing(shopItem -> shopItem.getPlaceholderStack().getType().name())).collect(Collectors.toList());
             case PRICE:
                 return shopItems.stream().sorted(Comparator.comparing(ShopItem::getPrice)).collect(Collectors.toList());
             case WORLD:

@@ -17,7 +17,7 @@ public class ShopDestroyListener implements Listener {
     @EventHandler
     public void onShowDestroy(ShopBreakEvent event) {
         Location loc = event.getShopInfo().getLocation();
-        plugin.getShopItemMap().remove(loc);
+        plugin.removeShopItem(loc);
         plugin.getLogger().info("Removed X:" + loc.getBlockX() + " Y:" + loc.getBlockX() + " Z:" + loc.getBlockX());
     }
 }
