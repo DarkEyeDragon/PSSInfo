@@ -34,7 +34,10 @@ public class ShopOpenCloseListener implements Listener {
             }
         }
         Location location = shopAPI.getLocation(container);
-        ShopItem newShopItem = new ShopItem(location, shopAPI.getItemStack(container), shopAPI.getPrice(container), totalAmount);
+        //Always set the display item amount to 1
+        ItemStack itemStack = shopAPI.getItemStack(container);
+        itemStack.setAmount(1);
+        ShopItem newShopItem = new ShopItem(location, itemStack, shopAPI.getPrice(container), totalAmount);
         plugin.addShopItem(newShopItem);
     }
 

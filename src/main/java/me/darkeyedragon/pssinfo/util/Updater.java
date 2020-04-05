@@ -36,6 +36,7 @@ public class Updater implements Update {
                     totalAmount += itemStack.getAmount();
                 }
             }
+            shopItem.getPlaceholderStack().setAmount(1);
             return new ShopItem(shopItem.getLocation(), shopItem.getPlaceholderStack(), shopItem.getPrice(), totalAmount);
         }).collect(Collectors.toMap(ShopItem::getLocation, shopItem -> shopItem));
 
